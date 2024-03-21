@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_task_randomcolor/presentation/main_screen.dart';
 import 'presentation/cubit/main_screen_cubit.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
       create: (context) => MainScreenCubit(),
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MainScreen(),
+        home: MyApp(),
       ),
     );
   }

@@ -1,41 +1,75 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cubit/main_screen_cubit.dart';
+void main() {
+  runApp(MyApp());
+}
 
-class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.read<MainScreenCubit>().changeColor(),
-      onLongPress: () => context.read<MainScreenCubit>().changeTextSize(),
-      child: const Scaffold(
-        backgroundColor: Colors.white,
-        body: TextWidget(),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Clickable Grid'),
+        ),
+        body: ClickableGrid(),
       ),
     );
   }
 }
 
-class TextWidget extends StatelessWidget {
-  const TextWidget({super.key});
+class ClickableGrid extends StatefulWidget {
+  const ClickableGrid({super.key});
+
+  @override
+  _ClickableGridState createState() => _ClickableGridState();
+}
+
+class _ClickableGridState extends State<ClickableGrid> {
+  final List<Color> _colors =
+      List.generate(12, (index) => _generateRandomColor());
+  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MainScreenCubit, MainScreenState>(
-      builder: (context, state) {
-        return Center(
-          child: Text(
-            'Hello there',
-            style: TextStyle(
-              fontSize: state.textSize,
-              color: state.color,
-            ),
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
+      itemCount: 12,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedIndex = index;
+              _updateColors();
+            });
+          },
+          child: Container(
+            color: _selectedIndex == index ? Colors.grey : _colors[index],
+            margin: const EdgeInsets.all(4.0),
           ),
         );
       },
+    );
+  }
+
+  void _updateColors() {
+    for (int i = 0; i < _colors.length; i++) {
+      if (i != _selectedIndex) {
+        _colors[i] = _generateRandomColor();
+      }
+    }
+  }
+
+  static Color _generateRandomColor() {
+    Random random = Random();
+    return Color.fromRGBO(
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1.0,
     );
   }
 }
